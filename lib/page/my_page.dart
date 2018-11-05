@@ -1,5 +1,7 @@
-import 'package:flutter/material.dart';
+import 'dart:async';
 
+import 'package:flutter/material.dart';
+import 'package:flutter_app/bean/user.dart';
 class MyPage extends StatefulWidget{
   @override
   _MenuPageState createState() {
@@ -9,8 +11,13 @@ class MyPage extends StatefulWidget{
 }
 
 class _MenuPageState extends State<MyPage>{
+  UserBean _userBean;
   String avatar;
   List<String> titles;
+ 
+  void initData(){
+
+  }
 
   Container buildImageAvatar(){
     titles = <String>["第一条","第二条","第三条","第四条","第五条","第六条","第七条","第八条","第九条","第十条"];
@@ -21,13 +28,20 @@ class _MenuPageState extends State<MyPage>{
           shape: BoxShape.circle,
           color: Colors.transparent,
           image: new DecorationImage(
-//            if(avatar == null||avatar.isEnemy)
-              image: new NetworkImage("https://www.csdn.net/app/img/wxfix.png"),fit: BoxFit.cover),
+              image: buildAvatar(),fit: BoxFit.cover),
           border: new Border.all(color: Colors.white,width: 2.0)
       ),
     );
   }
-  
+
+  ImageProvider buildAvatar(){
+    if(_userBean==null||_userBean.avatar.isEmpty){
+      return new AssetImage("assets/avatar.png",);
+    }else{
+      return new NetworkImage(_userBean.avatar);
+    }
+  }
+
   Container buildItem(String title,int index){
     return new Container(
       alignment: Alignment.centerLeft,
@@ -37,11 +51,12 @@ class _MenuPageState extends State<MyPage>{
         },
         child: new Column(
           children: <Widget>[
-            new Padding(padding: const EdgeInsets.fromLTRB(15.0, 15.0, 15.0, 15.0),
+            new Padding(padding: const EdgeInsets.fromLTRB(15.0, 14.0, 15.0, 14.0),
               child: new Row(
                 children: <Widget>[
                   new Expanded(child: new Text(title,style: TextStyle(color: Colors.black),)),
 //                  new IconButton(icon: new Icon(Icons.navigate_next), onPressed: null)
+                new Image.asset("assets/next.png",width: 18.00,height: 18.00,)
                 ],
               ),
             ),
@@ -69,7 +84,11 @@ class _MenuPageState extends State<MyPage>{
             flexibleSpace: FlexibleSpaceBar(
               background: new InkWell(
                 onTap: (){
+                  if(_userBean==null){
+                    Navigator.pushNamed(context, "login");
+                  }else{
 
+                  }
                 },
                 child: new Column(
                   mainAxisAlignment: MainAxisAlignment.center,
