@@ -1,6 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/bean/user.dart';
 import 'package:flutter_app/im_app.dart';
+import 'package:flutter_app/data/api.dart' as api;
+import 'dart:convert' show json;
+typedef Future CallLogin(UserBean bean);
 class LoginPage extends StatefulWidget{
+
+  final CallLogin callLogin;
+
+
+  LoginPage({this.callLogin});
+
   @override
   _LoginPageState createState() {
     return new _LoginPageState();
@@ -10,20 +20,21 @@ class LoginPage extends StatefulWidget{
 
 class _LoginPageState extends State<LoginPage>{
   String _password;
+  String _account;
 
   bool _isObscure = false;
-
   var _eyeColor = Colors.grey;
 
-  String _username;
-
+  final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
         title: new Text("LoginPage"),
       ),
-      body:buildList(),
+      body:Form(
+          key: _formKey,
+          child: buildList()),
     );
   }
 
@@ -48,7 +59,18 @@ class _LoginPageState extends State<LoginPage>{
     return new Align(
         child: SizedBox(height: 45.0,width: 270.0,
         child: RaisedButton(onPressed: (){
-
+          if(_formKey.currentState.validate()){
+            _formKey.currentState.save();
+            api.login(null,_account, _password).then((value){
+              print(value);
+              Map<String,dynamic> bean = json.decode(value.data);
+              if(bean['code'] == 200){
+                Map<String,dynamic> decode = json.decode(bean['data']);
+                var userBean = UserBean.fromJson(decode);
+                widget.callLogin(userBean);
+              }
+            });
+          }
         },child: Text("登录",style: Theme.of(context).primaryTextTheme.headline,),
         color: Colors.blue,
           shape: StadiumBorder(side: BorderSide(color: Colors.blue)),
@@ -82,14 +104,14 @@ class _LoginPageState extends State<LoginPage>{
   }
   TextFormField buildTextFormUserName() {
     return new TextFormField(
-        onSaved: (String value) => _username = value,
+        onSaved: (String value) => _account = value,
         validator: (String value){
           var emailReg = RegExp(
               r"[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?");
           if(value.isEmpty) {
             return '请输入邮箱或者手机号';
           }else if(!emailReg.hasMatch(value)){
-            //TODO 正则
+
           }
         },
         decoration: InputDecoration(

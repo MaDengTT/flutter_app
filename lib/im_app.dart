@@ -4,19 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 import 'package:flutter_app/bean/user.dart';
+import 'data/reducers.dart';
 
 
-class APPState{
-  UserBean userBean;
-  APPState(this.userBean);
-}
 
-APPState mainReducer(APPState state,dynamic action){
-  state = action;
-  return state;
-}
 
 
 void main() {
-  final store = new Store<APPState>(mainReducer,initialState: new APPState(null));
-  runApp(new MyApp());}
+  Store<AppState> store = new Store<AppState>(mainReducer,initialState: new AppState(
+    authState: new AuthState(),
+  ));
+  runApp(new MyApp(store:store));}

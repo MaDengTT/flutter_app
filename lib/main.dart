@@ -1,42 +1,55 @@
 import 'package:flutter/material.dart';
-import 'login.dart';
-import 'regist.dart';
+import 'package:flutter_app/page/login.dart';
+import 'package:flutter_app/page/regist.dart';
 import 'page/menu_page.dart';
 import 'page/my_page.dart';
 import 'page/home_page.dart';
-
-
+import 'package:redux/redux.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'data/reducers.dart';
+import 'bean/user.dart';
 
 class MyApp extends StatelessWidget {
+  final Store<AppState> store;
 
 
-  // This widget is the root of your application.
+  MyApp({this.store}); // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return new MaterialApp(
-      title: 'Flutter Demo',
-      theme: new ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or press Run > Flutter Hot Reload in IntelliJ). Notice that the
-        // counter didn't reset back to zero; the application is not restarted.
-        primarySwatch: Colors.blue,
+    return StoreProvider(
+      store: store,
+      child: new MaterialApp(
+        title: 'Flutter Demo',
+        theme: new ThemeData(
+          // This is the theme of your application.
+          //
+          // Try running your application with "flutter run". You'll see the
+          // application has a blue toolbar. Then, without quitting the app, try
+          // changing the primarySwatch below to Colors.green and then invoke
+          // "hot reload" (press "r" in the console where you ran "flutter run",
+          // or press Run > Flutter Hot Reload in IntelliJ). Notice that the
+          // counter didn't reset back to zero; the application is not restarted.
+          primarySwatch: Colors.blue,
+        ),
+        home: new MyHomePage(title: 'Flutter Demo Home Page',store:store),
+        routes: {
+          "login":(BuildContext content) => new StoreConnector(builder: (BuildContext context,Store<AppState> store){
+            return new LoginPage(callLogin:(UserBean user) async {
+                store.dispatch(new LoginSuccessAction(userBean:user));
+            },);
+          }, converter: (Store<AppState> store){
+            return store;
+          }),
+          "regist":(BuildContext content) => new RegistPager(),
+        },
       ),
-      home: new MyHomePage(title: 'Flutter Demo Home Page',),
-      routes: {
-        "login":(BuildContext content) => new LoginPage(),
-        "regist":(BuildContext content) => new RegistPager(),
-      },
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  final Store<AppState> store;
+  MyHomePage({Key key, this.title,this.store}) : super(key: key);
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -62,7 +75,7 @@ class _MyHomePageState extends State<MyHomePage> {
     _pageList = [
       new HomePage(),
       new MenuPage(),
-      new MyPage(),
+      new MyPage(widget.store),
     ];
   }
 

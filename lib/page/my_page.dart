@@ -2,7 +2,13 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_app/bean/user.dart';
+import 'package:flutter_app/data/reducers.dart';
+import 'package:redux/redux.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 class MyPage extends StatefulWidget{
+  final Store<AppState> store;
+  MyPage(this.store);
+
   @override
   _MenuPageState createState() {
     return new _MenuPageState();
