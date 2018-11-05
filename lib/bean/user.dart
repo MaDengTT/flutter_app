@@ -6,6 +6,6 @@ class UserBean {
   String phone;
 
   UserBean.fromJson(Map<String,dynamic> json):userName = json['userName']
-  ,userId=json['userId'],avatar=json['avatar'],phone=json['phone'];
+  ,userId=json['userID'],avatar=json['avatar'],phone=json['phone'];
 
 }

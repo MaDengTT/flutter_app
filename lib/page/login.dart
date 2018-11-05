@@ -65,7 +65,8 @@ class _LoginPageState extends State<LoginPage>{
               print(value);
               Map<String,dynamic> bean = json.decode(value.data);
               if(bean['code'] == 200){
-                Map<String,dynamic> decode = json.decode(bean['data']);
+                var decode = bean['data'];
+//                Map<String,dynamic> decode = json.decode(bean['data']);
                 var userBean = UserBean.fromJson(decode);
                 widget.callLogin(userBean);
               }

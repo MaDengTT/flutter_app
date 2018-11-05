@@ -1,4 +1,3 @@
-import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_app/bean/user.dart';
@@ -22,11 +21,11 @@ class _MenuPageState extends State<MyPage>{
   List<String> titles;
  
   void initData(){
-
+    titles = <String>["第一条","第二条","第三条","第四条","第五条","第六条","第七条","第八条","第九条","第十条"];
   }
 
   Container buildImageAvatar(){
-    titles = <String>["第一条","第二条","第三条","第四条","第五条","第六条","第七条","第八条","第九条","第十条"];
+
     return new Container(
       width: 60.0,
       height: 60.0,
@@ -44,7 +43,7 @@ class _MenuPageState extends State<MyPage>{
     if(_userBean==null||_userBean.avatar.isEmpty){
       return new AssetImage("assets/avatar.png",);
     }else{
-      return new NetworkImage(_userBean.avatar);
+      return new NetworkImage("http://api.mdshi.cn/"+_userBean.avatar);
     }
   }
 
@@ -75,6 +74,7 @@ class _MenuPageState extends State<MyPage>{
   
   @override
   Widget build(BuildContext context) {
+    initData();
     return new Scaffold(
 //      appBar: AppBar(title: new Text("我的")),
       body: new CustomScrollView(
@@ -96,17 +96,13 @@ class _MenuPageState extends State<MyPage>{
 
                   }
                 },
-                child: new Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    buildImageAvatar(),
-                    new Container(
-                      margin: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
-                      child: new Text("点击头像登录",
-                        style: new TextStyle(color: Colors.white,fontSize: 16.0),),
-                    )
-                  ],
-                ),
+                child: StoreConnector<AppState,AuthState>(
+                    converter: (store)=>store.state.authState,
+                    builder:(context,user){
+                      _userBean = user.userBean;
+                      print(avatar);
+                      return buildUser();
+                    }),
               ),
             ),
 
@@ -120,5 +116,19 @@ class _MenuPageState extends State<MyPage>{
         ],
       ),
     );
+  }
+
+  Column buildUser() {
+    return new Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  buildImageAvatar(),
+                  new Container(
+                    margin: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
+                    child: new Text(_userBean==null?"点击头像登录":_userBean.userName,
+                      style: new TextStyle(color: Colors.white,fontSize: 16.0),),
+                  )
+                ],
+              );
   }
 }
