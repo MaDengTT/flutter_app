@@ -8,7 +8,7 @@ import 'package:redux/redux.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'data/reducers.dart';
 import 'bean/user.dart';
-
+import 'page/search.dart';
 class MyApp extends StatelessWidget {
   final Store<AppState> store;
 
@@ -41,6 +41,7 @@ class MyApp extends StatelessWidget {
             return store;
           }),
           "regist":(BuildContext content) => new RegistPager(),
+          "search":(BuildContext content) => new SearchPage(),
         },
       ),
     );

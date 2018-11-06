@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-
+import 'package:image_picker/image_picker.dart';
+import 'package:flutter_app/plugins_test.dart';
 class HomePage extends StatefulWidget{
 
 
@@ -12,6 +13,19 @@ class HomePage extends StatefulWidget{
 
 class _HomePageState extends State<HomePage>{
   var _counter = 0;
+
+  var _image;
+
+  int level;
+
+  _getBatterLevel(){
+    getBatteryLevel().then((value){
+      setState(() {
+        level = value;
+      });
+    });
+  }
+
   void _incrementCounter() {
     setState(() {
       // This call to setState tells the Flutter framework that something has
@@ -22,6 +36,14 @@ class _HomePageState extends State<HomePage>{
       _counter++;
     });
   }
+
+  void getImage() async{
+    var image = await ImagePicker.pickImage(source: ImageSource.gallery,);
+    setState(() {
+      _image = image;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -29,7 +51,7 @@ class _HomePageState extends State<HomePage>{
       appBar: AppBar(title: new Text("Home"),),
       body: buildCenter(context),
       floatingActionButton: new FloatingActionButton(
-        onPressed: _incrementCounter,
+        onPressed: getImage,
         tooltip: 'Increment',
         child: new Icon(Icons.add),
       ),
@@ -55,8 +77,12 @@ class _HomePageState extends State<HomePage>{
         // horizontal).
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
+          SizedBox(width: 100,height: 100,
+          child: _image == null?new Text("No image"):
+            new Image.file(_image,fit: BoxFit.fill,),
+          ),
           new Text(
-            '数字',
+            '当前电量为 $level',
           ),
           new Text(
             '$_counter',
@@ -66,11 +92,11 @@ class _HomePageState extends State<HomePage>{
             Navigator.pushNamed(context, "login");
           }, child: new Text("To Login")),
           new FlatButton(onPressed: (){
-//            Navigator.pushNamed(context, "menu");
-          }, child: new Text("To Menu")),
+            Navigator.pushNamed(context, "search");
+          }, child: new Text("To Search")),
           new FlatButton(onPressed: (){
-//            Navigator.pushNamed(context, "my");
-          }, child: new Text("To My")),
+            _getBatterLevel();
+          }, child: new Text("getLevel")),
         ],
       ),
     );
