@@ -80,6 +80,12 @@ class _MyHomePageState extends State<MyHomePage> {
     ];
   }
 
+  @override
+  void initState() {
+    print("initState ==> main");
+    super.initState();
+    initData();
+  }
 
 
   @override
@@ -90,7 +96,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
-    initData();
+
     return new Scaffold(
       body: _pageList[_current],
  // This trailing comma makes auto-formatting nicer for build methods.

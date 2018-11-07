@@ -7,7 +7,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.BatteryManager;
 import android.os.Build;
+import android.util.Log;
 
+import io.flutter.plugin.common.EventChannel;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.PluginRegistry;
@@ -20,18 +22,40 @@ import static android.content.Context.BATTERY_SERVICE;
 public class PluginsTest implements MethodChannel.MethodCallHandler {
 
     private final PluginRegistry.Registrar mRegistrar;
+    private MethodChannel channel;
     Context context;
 
-    public PluginsTest(PluginRegistry.Registrar registrar) {
+    public PluginsTest(PluginRegistry.Registrar registrar, MethodChannel channel) {
         this.mRegistrar = registrar;
+        this.channel = channel;
         this.context = mRegistrar.context();
     }
 
     public static void registerWith(PluginRegistry.Registrar registrar) {
         MethodChannel channel =
                 new MethodChannel(registrar.messenger(), "com.mmd.flutter_app/plugins_test");
-        PluginsTest instance = new PluginsTest(registrar);
+        PluginsTest instance = new PluginsTest(registrar,channel);
         channel.setMethodCallHandler(instance);
+    }
+
+    private static final String TAG = "PluginsTest";
+    public void getStringForFlutter() {
+        channel.invokeMethod("getName", null, new MethodChannel.Result() {
+            @Override
+            public void success( Object o) {
+                Log.d(TAG, "success: "+o.toString());
+            }
+
+            @Override
+            public void error(String s,  String s1,  Object o) {
+
+            }
+
+            @Override
+            public void notImplemented() {
+
+            }
+        });
     }
 
     @Override
